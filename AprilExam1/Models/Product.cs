@@ -23,6 +23,15 @@ public partial class Product
 
     public string Description { get; set; } = null!;
 
+    [NotMapped]
+    public double FinalPrice => Discount > 0 ? Price * (1 - (double)Discount / 100) : Price;
+
+    [NotMapped]
+    public bool IsHighDiscount => Discount > 15;
+
+    [NotMapped]
+    public bool IsInStock => CountInStorage > 0;
+
     public virtual Category Category { get; set; } = null!;
 
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();

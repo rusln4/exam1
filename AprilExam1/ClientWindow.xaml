@@ -1,4 +1,4 @@
-﻿<Window x:Class="AprilExam1.ClientWindow"
+<Window x:Class="AprilExam1.ClientWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -11,10 +11,25 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Border BorderBrush="Black" BorderThickness="1" Margin="5" Padding="5">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="White"/>
+                                <Style.Triggers>
+                                     <!-- Скидка более 15% -->
+                                     <DataTrigger Binding="{Binding IsHighDiscount}" Value="True">
+                                         <Setter Property="Background" Value="#2E8B57"/>
+                                     </DataTrigger>
+                                     <!-- Товара нет на складе (голубой цвет) -->
+                                     <DataTrigger Binding="{Binding IsInStock}" Value="False">
+                                         <Setter Property="Background" Value="LightBlue"/>
+                                     </DataTrigger>
+                                 </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="150"/>
-                                <ColumnDefinition Width="600"/>
+                                <ColumnDefinition Width="700"/>
                                 <ColumnDefinition Width="100"/>
                             </Grid.ColumnDefinitions>
 
@@ -29,7 +44,24 @@
                                 <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="0 5 0 0"></TextBlock>
                                 <TextBlock Text="{Binding Manufacture.Name, StringFormat='Производитель: {0}'}" Margin="0 2 0 0"></TextBlock>
                                 <TextBlock Text="{Binding Supplire.Name, StringFormat='Поставщик: {0}'}" Margin="0 2 0 0"></TextBlock>
-                                <TextBlock Text="{Binding Price, StringFormat='Цена: {0}'}" Margin="0 2 0 0"></TextBlock>
+                                
+                                <!-- Логика отображения цены -->
+                                <StackPanel Orientation="Horizontal" Margin="0 2 0 0">
+                                    <TextBlock Text="Цена: "/>
+                                    <TextBlock Text="{Binding Price}" Foreground="Red" TextDecorations="Strikethrough" Margin="0,0,5,0">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Discount}" Value="0">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding FinalPrice, StringFormat='{0:N2}'}" Foreground="Black"/>
+                                </StackPanel>
+
                                 <TextBlock Text="{Binding Unit, StringFormat='Единица измерения: {0}'}" Margin="0 2 0 0"></TextBlock>
                                 <TextBlock Text="{Binding CountInStorage, StringFormat='Количество на складе: {0}'}" Margin="0 2 0 0"/>
                             </StackPanel>
@@ -37,10 +69,8 @@
                             <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <TextBlock Text="Скидка: " TextWrapping="Wrap" TextAlignment="Center" FontSize="10"></TextBlock>
                                 <TextBlock Text="{Binding Discount, StringFormat=' {0}%'}" FontWeight="Bold" HorizontalAlignment="Center"></TextBlock>
-                                
                             </StackPanel>
                         </Grid>
-                        
                     </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
